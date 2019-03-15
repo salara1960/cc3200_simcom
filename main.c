@@ -81,33 +81,33 @@
 #define GSMUartGetChar()    MAP_UARTCharGet(GSM)
 #define GSMUartPutChar(c)   MAP_UARTCharPut(GSM,c)
 
-#define GSM_MAX_BUFFER		512
-#define	MAX_LP_LEN			32
+#define GSM_MAX_BUFFER      512
+#define MAX_LP_LEN          32
 
 #define IP_ADDR             0xc0a80002 /* 192.168.0.2 */
 #define PORT_CTL            5000
 #define PORT_TCP            5001
 #define PORT_RTP            5002
-#define BUF_SIZE            GSM_MAX_BUFFER	//1400
+#define BUF_SIZE            GSM_MAX_BUFFER //1400
 
 #define PACKET_SIZE         160
 #define RECORD_BUFFER_SIZE  25 * PACKET_SIZE//24
 #define PLAY_BUFFER_SIZE    50 * PACKET_SIZE//64
-#define HULF_BUFFER			25 * PACKET_SIZE//32
+#define HULF_BUFFER         25 * PACKET_SIZE//32
 #ifndef DIRECT
-    #define RECV_BUFFER_SIZE	8
-    #define RECV_BUFFER_SIZE_BT	RECV_BUFFER_SIZE*PACKET_SIZE
-    #define RECV_BUFFER_MASK	RECV_BUFFER_SIZE - 1
+    #define RECV_BUFFER_SIZE    8
+    #define RECV_BUFFER_SIZE_BT RECV_BUFFER_SIZE*PACKET_SIZE
+    #define RECV_BUFFER_MASK    RECV_BUFFER_SIZE - 1
 #endif
-#define INVALID_CLIENT_ADDRESS	0x00000000 //Invalid clientIP
-#define ALAW				    0xD5
-#define ULAW				    0xFF
+#define INVALID_CLIENT_ADDRESS 0x00000000 //Invalid clientIP
+#define ALAW                   0xD5
+#define ULAW                   0xFF
 
-#define LENS_ADR	            32
+#define LENS_ADR               32
 
-#define TOKEN_ARRAY_SIZE        6
-#define STRING_TOKEN_SIZE       10
-#define SCAN_TABLE_SIZE         20
+#define TOKEN_ARRAY_SIZE       6
+#define STRING_TOKEN_SIZE      10
+#define SCAN_TABLE_SIZE        20
 
 #ifdef SET_LOAD
 	#define PREFIX_BUFFER_DEF   "/tmp/tmp.bin"
@@ -121,9 +121,9 @@
 #define URL_LEN_MAX	61
 
 // Application specific status/error codes
-typedef enum{
+typedef enum {
     // Choosing -0x7D0 to avoid overlap w/ host-driver's error codes
-    LAN_CONNECTION_FAILED = -0x7D0,       
+    LAN_CONNECTION_FAILED = -0x7D0,
     INTERNET_CONNECTION_FAILED = LAN_CONNECTION_FAILED - 1,
     DEVICE_NOT_IN_STATION_MODE = INTERNET_CONNECTION_FAILED - 1,
 
@@ -158,7 +158,6 @@ typedef enum{
 	INVALID_FILE = FILE_WRITE_ERROR - 1,
 	SERVER_CONNECTION_FAILED = INVALID_FILE - 1,
 	GET_HOST_IP_FAILED = SERVER_CONNECTION_FAILED  - 1
-
 
 } e_AppStatusCodes;
 
