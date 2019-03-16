@@ -1,0 +1,7 @@
+
+Compiler Build-Flags
+-mv7M4 --code_state=16 --float_support=vfplib -me --include_path="${CG_TOOL_ROOT}/include" --include_path="${CC3200_SDK_ROOT}/simplelink_extlib/provisioninglib" --include_path="${CC3200_SDK_ROOT}/inc" --include_path="${CC3200_SDK_ROOT}/example/common" --include_path="${CC3200_SDK_ROOT}/netapps/" --include_path="${CC3200_SDK_ROOT}/simplelink/" --include_path="${CC3200_SDK_ROOT}/simplelink_extlib/include" --include_path="${CC3200_SDK_ROOT}/simplelink/include" --include_path="${CC3200_SDK_ROOT}/simplelink/source" --include_path="${CC3200_SDK_ROOT}/driverlib" --include_path="${CC3200_SDK_ROOT}/oslib/" --define=ccs --define=cc3200 --define=USE_FREERTOS --define=SL_PLATFORM_MULTI_THREADED --define=NETWORK --define=HTTPCli_LIBTYPE_MIN --define=__SL__ --define=__CCS__ -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi 
+
+
+Linker Build-Flags
+-m"${ProjName}.map" --heap_size=0xA000 --stack_size=0x1000 -i"${CC3200_SDK_ROOT}/netapps/http/client/ccs/HTTPClientMinLib" -i"${CG_TOOL_ROOT}/lib" -i"${CC3200_SDK_ROOT}/driverlib/ccs/Release" -i"${CC3200_SDK_ROOT}/simplelink/ccs/OS" -i"${CC3200_SDK_ROOT}/oslib/ccs/free_rtos" --reread_libs --define=HTTPCli_LIBTYPE_MIN --define=__SL__ --define=__CCS__ --diag_wrap=off --display_error_number --warn_sections --xml_link_info="${ProjName}_linkInfo.xml" --rom_model 

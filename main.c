@@ -54,9 +54,9 @@
 
 #define SSID_FILE_NAME      "www/ap.conf"
 #define AUTH_FILE_NAME      "/sys/shadow.conf"
-#define DEF_LOGIN		    "def_login"
-#define DEF_PASSWD		    "def_passwd"
-#define DEF_SECURE_KEY	    "abracadabra"
+#define DEF_LOGIN           "def_login"
+#define DEF_PASSWD          "def_passwd"
+#define DEF_SECURE_KEY      "abracadabra"
 #define APPLICATION_NAME    "GSM"
 #define APPLICATION_VERSION "2.9"
 #define AP_SSID_LEN_MAX     (33)
