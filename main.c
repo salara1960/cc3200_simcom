@@ -392,34 +392,31 @@ volatile unsigned char g_ucConnectTimeout = 0;
 //****************************************************************************
 long CreateUdpSrv(tUDPSocket *pSock, s_ctl_udp *udp_data)
 {
-long rt = -1, ti_udp, cli_udp;
+long rt = -1, ti_udp = PORT_RTP, cli_udp;
 _u32 l_ip, r_ip;
 
     if (!udp_data) {
-    	ti_udp = PORT_RTP;
     	cli_udp = PORT_RTP;
-    	memcpy(rtp_adr, cli_adr,4);
-    	l_ip = SL_IPV4_VAL(self_adr[0], self_adr[1], self_adr[2], self_adr[3]); //localhost
-    	r_ip = SL_IPV4_VAL(rtp_adr[0], rtp_adr[1], rtp_adr[2], rtp_adr[3]);     //remote host
+    	memcpy(rtp_adr, cli_adr, 4);
     } else {
-    	if (udp_data->ti_port > 0) ti_udp = udp_data->ti_port; else ti_udp = PORT_RTP;
+    	if (udp_data->ti_port > 0) ti_udp = udp_data->ti_port;
     	cli_udp = udp_data->cli_port;
     	memcpy(rtp_adr, (unsigned char *)&udp_data->cli_adr[0], 4);
-    	l_ip = SL_IPV4_VAL(self_adr[0], self_adr[1], self_adr[2], self_adr[3]); //localhost
-    	r_ip = SL_IPV4_VAL(rtp_adr[0], rtp_adr[1], rtp_adr[2], rtp_adr[3]);     //remote host
     }
+    l_ip = SL_IPV4_VAL(self_adr[0], self_adr[1], self_adr[2], self_adr[3]); //localhost
+    r_ip = SL_IPV4_VAL(rtp_adr[0], rtp_adr[1], rtp_adr[2], rtp_adr[3]);     //remote host
 
     if (pSock->iSockDesc>0) sl_Close(pSock->iSockDesc);
-    pSock->iSockDesc = sl_Socket(AF_INET, SOCK_DGRAM, 0);
-    pSock->Server.sin_family = AF_INET;
+    pSock->iSockDesc              = sl_Socket(AF_INET, SOCK_DGRAM, 0);
+    pSock->Server.sin_family      = AF_INET;
     pSock->Server.sin_addr.s_addr = sl_Htonl(l_ip);
-    pSock->Server.sin_port = sl_Htons(ti_udp);
-    pSock->iServerLength = sizeof(pSock->Server);
+    pSock->Server.sin_port        = sl_Htons(ti_udp);
+    pSock->iServerLength          = sizeof(pSock->Server);
 
-    pSock->Client.sin_family = AF_INET;
+    pSock->Client.sin_family      = AF_INET;
     pSock->Client.sin_addr.s_addr = sl_Htonl(r_ip);
-    pSock->Client.sin_port = sl_Htons(cli_udp);
-    pSock->iClientLength = sizeof(pSock->Client);
+    pSock->Client.sin_port        = sl_Htons(cli_udp);
+    pSock->iClientLength          = sizeof(pSock->Client);
 
     rt = sl_Bind(pSock->iSockDesc, (struct sockaddr*)&(pSock->Server), pSock->iServerLength);
     ASSERT_ON_ERROR(rt);
@@ -427,8 +424,8 @@ _u32 l_ip, r_ip;
     if ((!rt) && (pSock->iSockDesc > 0) ) {
     	rt = pSock->iSockDesc;
     	UART_PRINT("[SOC] local %d.%d.%d.%d:%d\tremote %d.%d.%d.%d:%d\n\r",
-    		self_adr[0], self_adr[1], self_adr[2], self_adr[3], ti_udp,
-			rtp_adr[0], rtp_adr[1], rtp_adr[2], rtp_adr[3], cli_udp);
+    		       self_adr[0], self_adr[1], self_adr[2], self_adr[3], ti_udp,
+			       rtp_adr[0], rtp_adr[1], rtp_adr[2], rtp_adr[3], cli_udp);
     } else {
     	pSock->iSockDesc = -1;
     	rt = -1;
@@ -436,7 +433,6 @@ _u32 l_ip, r_ip;
     }
 
     return rt;
-
 }
 //****************************************************************************
 static long WlanConnect()
@@ -467,7 +463,7 @@ static long WlanConnect()
 
     return SUCCESS;
 }
-//****************************************************************************
+//*****************************************************************************
 //*****************************************************************************
 #ifdef USE_FREERTOS
 //*****************************************************************************
@@ -514,8 +510,8 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
         case SL_WLAN_CONNECT_EVENT:
         {
             SET_STATUS_BIT(g_ulStatus, STATUS_BIT_CONNECTION);
-            memset(g_ucConnectionSSID,0,sizeof(g_ucConnectionSSID));
-            memset(g_ucConnectionBSSID,0,sizeof(g_ucConnectionBSSID));
+            memset(g_ucConnectionSSID,  0, sizeof(g_ucConnectionSSID));
+            memset(g_ucConnectionBSSID, 0, sizeof(g_ucConnectionBSSID));
             // Copy new connection SSID and BSSID to global parameters
             memcpy(g_ucConnectionSSID,pWlanEvent->EventData.
                    STAandP2PModeWlanConnected.ssid_name,
@@ -525,9 +521,9 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
                    SL_BSSID_LENGTH);
 
             UART_PRINT("[WLAN] STA Connected to AP '%s', BSSID: %x:%x:%x:%x:%x:%x\n\r",
-                      g_ucConnectionSSID,g_ucConnectionBSSID[0],
-                      g_ucConnectionBSSID[1],g_ucConnectionBSSID[2],
-                      g_ucConnectionBSSID[3],g_ucConnectionBSSID[4],
+                      g_ucConnectionSSID, g_ucConnectionBSSID[0],
+                      g_ucConnectionBSSID[1], g_ucConnectionBSSID[2],
+                      g_ucConnectionBSSID[3], g_ucConnectionBSSID[4],
                       g_ucConnectionBSSID[5]);
         }
         break;
@@ -568,13 +564,13 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
             CLR_STATUS_BIT(g_ulStatus, STATUS_BIT_CONNECTION_FAILED);
 
             UART_PRINT("[WLAN] Client BSSID=%x:%x:%x:%x:%x:%x connected to AP '%s'\n\r",
-                        		pWlanEvent->EventData.APModeStaConnected.mac[0],
-            					pWlanEvent->EventData.APModeStaConnected.mac[1],
-            					pWlanEvent->EventData.APModeStaConnected.mac[2],
-            					pWlanEvent->EventData.APModeStaConnected.mac[3],
-            					pWlanEvent->EventData.APModeStaConnected.mac[4],
-            					pWlanEvent->EventData.APModeStaConnected.mac[5],
-            					g_ucConnectionSSID);
+                       pWlanEvent->EventData.APModeStaConnected.mac[0],
+            		   pWlanEvent->EventData.APModeStaConnected.mac[1],
+            		   pWlanEvent->EventData.APModeStaConnected.mac[2],
+            		   pWlanEvent->EventData.APModeStaConnected.mac[3],
+            		   pWlanEvent->EventData.APModeStaConnected.mac[4],
+            		   pWlanEvent->EventData.APModeStaConnected.mac[5],
+            		   g_ucConnectionSSID);
 
         }
         break;
@@ -585,13 +581,13 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
             CLR_STATUS_BIT(g_ulStatus, STATUS_BIT_IP_LEASED);
 
             UART_PRINT("[WLAN] Client BSSID=%x:%x:%x:%x:%x:%x disconnected from AP '%s'\n\r",
-                        		pWlanEvent->EventData.APModestaDisconnected.mac[0],
-                        		pWlanEvent->EventData.APModestaDisconnected.mac[1],
-                        		pWlanEvent->EventData.APModestaDisconnected.mac[2],
-                        		pWlanEvent->EventData.APModestaDisconnected.mac[3],
-                        		pWlanEvent->EventData.APModestaDisconnected.mac[4],
-                        		pWlanEvent->EventData.APModestaDisconnected.mac[5],
-                        		g_ucConnectionSSID);
+                       pWlanEvent->EventData.APModestaDisconnected.mac[0],
+                       pWlanEvent->EventData.APModestaDisconnected.mac[1],
+                       pWlanEvent->EventData.APModestaDisconnected.mac[2],
+                       pWlanEvent->EventData.APModestaDisconnected.mac[3],
+                       pWlanEvent->EventData.APModestaDisconnected.mac[4],
+                       pWlanEvent->EventData.APModestaDisconnected.mac[5],
+                       g_ucConnectionSSID);
         }
         break;
         case SL_WLAN_SMART_CONFIG_COMPLETE_EVENT:
@@ -685,9 +681,9 @@ void SimpleLinkNetAppEventHandler(SlNetAppEvent_t *pNetAppEvent)
             sprintf(CLI_ADR, "%d.%d.%d.%d", cli_adr[0], cli_adr[1], cli_adr[2], cli_adr[3]);
             UART_PRINT("[NET] Client %s [%x:%x:%x:%x:%x:%x] online (time=%d).\n\r",
             		CLI_ADR,
-					pEventData->mac[0],pEventData->mac[1],
-            		pEventData->mac[2],pEventData->mac[3],
-            		pEventData->mac[4],pEventData->mac[5],
+					pEventData->mac[0], pEventData->mac[1],
+            		pEventData->mac[2], pEventData->mac[3],
+            		pEventData->mac[4], pEventData->mac[5],
             		pEventData->lease_time);
             if ((rtp_adr[0]|rtp_adr[1] | rtp_adr[2] | rtp_adr[3]) == 0) memcpy(rtp_adr, cli_adr, 4);
         }
@@ -890,7 +886,7 @@ static void InitializeAppVariables()
     memset(g_ucConnectionSSID,  0, sizeof(g_ucConnectionSSID));
     memset(g_ucConnectionBSSID, 0, sizeof(g_ucConnectionBSSID));
 
-    memcpy(SSID_NAME, SSID_NAME_DEF, SSID_LEN_MAX);
+    memcpy(SSID_NAME,    SSID_NAME_DEF,    SSID_LEN_MAX);
     memcpy(SECURITY_KEY, SECURITY_KEY_DEF, SSID_LEN_MAX);
 
     SECURITY_TYPE = SECURITY_TYPE_DEF;
@@ -1043,8 +1039,7 @@ long ConnectToNetwork()
     // staring simplelink
     g_uiSimplelinkRole =  sl_Start(NULL, NULL, NULL);
 
-    // Device is not in STA mode and Force AP Jumper is not Connected 
-    //- Switch to STA mode
+    // Device is not in STA mode and Force AP Jumper is not Connected
     if (g_uiSimplelinkRole != ROLE_STA && g_uiDeviceModeConfig == ROLE_STA ) {
         //Switch to STA Mode
         lRetVal = sl_WlanSetMode(ROLE_STA);
@@ -1056,8 +1051,7 @@ long ConnectToNetwork()
         g_uiSimplelinkRole =  sl_Start(NULL, NULL, NULL);
     }
 
-    //Device is not in AP mode and Force AP Jumper is Connected - 
-    //Switch to AP mode
+    //Device is not in AP mode and Force AP Jumper is Connected
     if (g_uiSimplelinkRole != ROLE_AP && g_uiDeviceModeConfig == ROLE_AP ) {
          //Switch to AP Mode
         lRetVal = sl_WlanSetMode(ROLE_AP);
@@ -1073,10 +1067,7 @@ long ConnectToNetwork()
     //No Mode Change Required
     if (g_uiSimplelinkRole == ROLE_AP) {
        //waiting for the AP to acquire IP address from Internal DHCP Server
-       while (!IS_IP_ACQUIRED(g_ulStatus))
-       {
-
-       }
+       while (!IS_IP_ACQUIRED(g_ulStatus)) {}
 
        //Stop Internal HTTP Server
        lRetVal = sl_NetAppStop(SL_NET_APP_HTTP_SERVER_ID);
@@ -1161,8 +1152,8 @@ long ConnectToNetwork()
 					g_ucConnectionSSID,
 					SL_IPV4_BYTE(g_uiIpAddress, 3), SL_IPV4_BYTE(g_uiIpAddress, 2),
 					SL_IPV4_BYTE(g_uiIpAddress, 1), SL_IPV4_BYTE(g_uiIpAddress, 0),
-					SL_IPV4_BYTE(g_uiIpMask, 3), SL_IPV4_BYTE(g_uiIpMask,2),
-					SL_IPV4_BYTE(g_uiIpMask, 1), SL_IPV4_BYTE(g_uiIpMask,0),
+					SL_IPV4_BYTE(g_uiIpMask, 3), SL_IPV4_BYTE(g_uiIpMask, 2),
+					SL_IPV4_BYTE(g_uiIpMask, 1), SL_IPV4_BYTE(g_uiIpMask, 0),
 					SL_IPV4_BYTE(broadcast_adr, 3), SL_IPV4_BYTE(broadcast_adr, 2),
 					SL_IPV4_BYTE(broadcast_adr, 1), SL_IPV4_BYTE(broadcast_adr, 0),
 					broadcast_port);
@@ -1207,6 +1198,7 @@ unsigned char pucGPIOPin, ret;
     return ret;
 }
 //*****************************************************************************
+//                  Обработчик прерывания от таймера
 //*****************************************************************************
 void TimerBaseIntHandler(void)
 {
@@ -1234,7 +1226,7 @@ unsigned short i = 0;
 		}
 	}
 
-    while (MAP_UARTCharsAvail(GSM) == true) {
+    while (MAP_UARTCharsAvail(GSM)) {
     	bt = MAP_UARTCharGetNonBlocking(GSM);
     	if ((bt >= 0x0a) && (bt <= 0x7f)) {
     		from_uart.buf[from_uart.wr_adr] = bt;
@@ -1249,7 +1241,7 @@ unsigned short i = 0;
 	if (to_uart.done) {
         	i = 0;
         	while (i < to_uart.len) {
-        		if (MAP_UARTSpaceAvail(GSM) == true) {
+        		if (MAP_UARTSpaceAvail(GSM)) {
         			bt = to_uart.buf[i++];
         			MAP_UARTCharPutNonBlocking(GSM, bt);
         		} else {
@@ -1266,10 +1258,9 @@ unsigned short i = 0;
 //*****************************************************************************
 void GSM_RX_CLEAR()
 {
-	//clear gsm_rx_buffer
-	while (MAP_UARTCharsAvail(GSM) == true) MAP_UARTCharGet(GSM);
-	memset((unsigned char *)&from_uart, 0, sizeof(s_uart));
+	while (MAP_UARTCharsAvail(GSM)) MAP_UARTCharGet(GSM);//clear gsm_rx_buffer
 
+	memset((unsigned char *)&from_uart, 0, sizeof(s_uart));
 }
 //****************************************************************************
 void TcpServer(unsigned short usPort)
@@ -1309,8 +1300,8 @@ unsigned int *uki = NULL;
 		vio_pr = 0;
 	}
 
-    sLocalAddr.sin_family = SL_AF_INET;
-    sLocalAddr.sin_port = sl_Htons((unsigned short)usPort);
+    sLocalAddr.sin_family      = SL_AF_INET;
+    sLocalAddr.sin_port        = sl_Htons((unsigned short)usPort);
     sLocalAddr.sin_addr.s_addr = 0;
     iSockID = (int)sl_Socket(SL_AF_INET, SL_SOCK_STREAM, 0);
     if( iSockID < 0 ) {
@@ -1409,7 +1400,9 @@ unsigned int *uki = NULL;
                     } else if (iStatus > 0) {
                         uk += iStatus;
                         memset(stx, 0, GSM_MAX_BUFFER);
-                        strcpy(stx, "\r\n"); strcat(stx, at_rx_tcp); strcat(stx, "\r\n");
+                        strcpy(stx, "\r\n");
+                        strcat(stx, at_rx_tcp);
+                        strcat(stx, "\r\n");
                         memset((unsigned char *)&to_uart, 0, sizeof(s_uart));
                         strcpy((char *)to_uart.buf, stx);
                         to_uart.len = strlen(stx);
@@ -1417,7 +1410,7 @@ unsigned int *uki = NULL;
                         Report(at_rx_tcp);
                         memset(at_rx_tcp, 0, BUF_SIZE);
                         uk = 0;
-                        if (strstr(stx,"AT+CHUP") != NULL) {
+                        if (strstr(stx,"AT+CHUP")) {
                             rtp_enable = 0;
                             ring = 0;
                         }
@@ -1453,12 +1446,12 @@ unsigned int *uki = NULL;
                         if (strstr(at_rx_gsm,"RING") != NULL) {
                             rtp_enable = 0;
                             ring = 1;
-                        } else if (strstr(at_rx_gsm, "VOICE CALL: BEGIN") != NULL) {
+                        } else if (strstr(at_rx_gsm, "VOICE CALL: BEGIN")) {
                             rtp_enable = 1;
                             ring = 0;
                             GPIO_IF_LedOn(MCU_RED_LED_GPIO);
-                        } else if ( (strstr(at_rx_gsm,"VOICE CALL: END") != NULL) ||
-        								(strstr(at_rx_gsm, "NO CARRIER") != NULL) ) {
+                        } else if ( (strstr(at_rx_gsm,"VOICE CALL: END")) ||
+        								(strstr(at_rx_gsm, "NO CARRIER")) ) {
                             rtp_enable = 0;
                             ring = 0;
                             GPIO_IF_LedOff(MCU_RED_LED_GPIO);
@@ -1495,6 +1488,8 @@ unsigned int *uki = NULL;
     }//EndOfJob
 
 }
+//****************************************************************************
+//                 Обработчик прерывания от I2S
 //****************************************************************************
 void I2SIntHandler()
 {
@@ -1544,9 +1539,11 @@ void init_rtp(s_packet * pak)
 
 	memset((unsigned char *)pak, 0, sizeof(s_packet));
 	pak->hdr.version = 0x80;
-	pak->hdr.codec = 8; //711alaw codec
-	pak->hdr.ssrc = sl_Htonl(one_sec);
+	pak->hdr.codec   = 8; //711alaw codec
+	pak->hdr.ssrc    = sl_Htonl(one_sec);
 }
+//-----------------------------------------------------------
+//           rtp-thread -> "речевая" нитка
 //-----------------------------------------------------------
 static void UDPTask(void *pvParameters)
 {
@@ -1556,7 +1553,7 @@ s_packet r_pack, t_pack;
 unsigned char faza = 2, done_pack = 0, err = 0, first = 1;
 unsigned short t_seqn = 0, r_seqn = 0, seq_now = 0, seq_first = 0;
 unsigned int t_tstamp = 0, fsize = 0, r_pk = 0, t_pk = 0;
-int rStatus, sStatus, pak_size=sizeof(s_packet);
+int rStatus, sStatus, pak_size = sizeof(s_packet);
 #ifndef DIRECT
 	unsigned short ind;
 	unsigned char rx_cnt = 0;
@@ -1584,7 +1581,7 @@ int rStatus, sStatus, pak_size=sizeof(s_packet);
     	switch (faza) {
     		case 0 :
     			if( CreateUdpSrv(&g_UdpSock, &ctl_udp) < 0 ) {
-    				osi_Sleep(2000);
+    				osi_Sleep(2000);//2 sec
     			} else {
 #ifndef DIRECT
     				memset((unsigned char *)&recv_buf[0], silent, RECV_BUFFER_SIZE_BT);
@@ -1641,7 +1638,8 @@ int rStatus, sStatus, pak_size=sizeof(s_packet);
     								    done_pack = 1;
     								} else UART_PRINT("[UDP] RECV ERROR(strip): pk=%d bytes=%d fs=%d\n\r", r_pk, rStatus, fsize);
     								if (done_pack) {
-    								    r_pk++; err = 0;
+    								    r_pk++;
+    								    err = 0;
     								    seq_now = sl_Htons(r_pack.hdr.seq_num);
     								    if (first) {
     								        first = 0;
@@ -1741,6 +1739,8 @@ int rStatus, sStatus, pak_size=sizeof(s_packet);
     }//loop
 }
 //****************************************************************************
+//                Нитка AT-команд модуля SIM5320
+//****************************************************************************
 static void TCPTask(void *pvParameters)
 {
 long lRetVal = -1;
@@ -1771,7 +1771,7 @@ long lRetVal = -1;
 	Timer_IF_IntSetup(g_ulBase, TIMER_A, TimerBaseIntHandler);
 	//**********************************************************
 	memset((unsigned char *)&from_uart, 0, sizeof(s_uart));
-	memset((unsigned char *)&to_uart, 0, sizeof(s_uart));
+	memset((unsigned char *)&to_uart,   0, sizeof(s_uart));
 
 	Timer_IF_Start(g_ulBase, TIMER_A, 1);//1ms
 
@@ -2048,8 +2048,8 @@ uint8_t dst_bin[16] = {0};
 			UART_PRINT("[MD5] Access granted for %d.%d.%d.%d\n\r",
 						md5->auth_adr[0], md5->auth_adr[1], md5->auth_adr[2], md5->auth_adr[3]);
 		}
+		free(src_str);
 	}
-	if (src_str) free(src_str);
 
 	return ret;
 }
@@ -2062,6 +2062,8 @@ void GSM_OFF(unsigned char pr)
 		GPIO_IF_LedOn(MCU_LED5_GPIO);// 1 - pwr
 	}
 }
+//****************************************************************************
+//                  Нитка команд управления устройством
 //****************************************************************************
 static void CTLTask(void *pvParameters)
 {
@@ -2078,7 +2080,7 @@ static unsigned long tmr_ctl = 0;
 	memset((_u8 *)&auth_ctl_cmd.cmd, 0, sz);
 	if (ReadFileFromDev((unsigned char *)AUTH_FILE_NAME) <= 0) {
 		auth_ctl_cmd.cmd = 11;
-		strcpy((char *)&auth_ctl_cmd.login[0], (char *)DEF_LOGIN);
+		strcpy((char *)&auth_ctl_cmd.login[0],  (char *)DEF_LOGIN);
 		strcpy((char *)&auth_ctl_cmd.passwd[0], (char *)DEF_PASSWD);
 		WriteFileToDev((unsigned char *)AUTH_FILE_NAME);
 	}
@@ -2585,6 +2587,8 @@ outl:
 	return ret;
 }
 //*****************************************************************************
+//              Нитка обновления firmware с удаленного сервера
+//*****************************************************************************
 static void BINTask(void *pvParameters)
 {
 long ret = 0, err = 0;
@@ -2641,6 +2645,8 @@ char bcm[128] = {0};
 
     return rt;
 }
+//*****************************************************************************
+//               Нитка broadcast сообщений
 //*****************************************************************************
 static void BroadCastTask(void *pvParameters)
 {
@@ -2700,7 +2706,7 @@ static void BoardInit(void)
     PRCMCC3200MCUInit();
 }
 //****************************************************************************
-//                            MAIN FUNCTION
+//                                MAIN
 //****************************************************************************
 void main()
 {
