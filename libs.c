@@ -14,7 +14,7 @@ void InitTerm(unsigned char prn)
                             MAP_PRCMPeripheralClockGet(CONSOLE_PERIPH),
                             UART_BAUD_RATE,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
-  if (prn) Message("\n\r\n\rInit UARTA0 (CONSOLE) done.\n\r");
+    if (prn) Message("\n\r\n\rInit UARTA0 (CONSOLE) done.\n\r");
 #endif
 
 #ifdef GSM
@@ -24,7 +24,7 @@ void InitTerm(unsigned char prn)
                             MAP_PRCMPeripheralClockGet(GSM_PERIPH),
                             UART_BAUD_RATE,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
-  if (prn) Message("Init UARTA1 (GSM) done.\n\r");
+    if (prn) Message("Init UARTA1 (GSM) done.\n\r");
 #endif
 
   __Errorlog = 0;
@@ -33,23 +33,20 @@ void InitTerm(unsigned char prn)
 void Message(const char *str)
 {
 #ifndef NOTERM
-    if(str) {
-        while(*str != '\0') {
-            MAP_UARTCharPut(CONSOLE, *str++);
-        }
+    if (!str) return;
+
+    while (*str != '\0') {
+        MAP_UARTCharPut(CONSOLE, *str++);
     }
 #endif
 }
 //--------------------------------------------------------------------------
-void GSM_TX_STR(char *str)
+void GSM_TX_STR(const char *str)
 {
-    if(str) {
-        int len = strlen(str);
-        int i = 0;
-        while(i < len) {
-            MAP_UARTCharPutNonBlocking(GSM, *str++);
-            i++;
-        }
+    if (!str) return;
+
+    while (*str != '\0') {
+        MAP_UARTCharPutNonBlocking(GSM, *str++);
     }
 }
 //-----------------------------------------------------------------------
@@ -73,7 +70,7 @@ void Error(char *pcFormat, ...)
     char  cBuf[512];
     va_list list;
     va_start(list, pcFormat);
-    vsnprintf(cBuf, 512, pcFormat,list);
+    vsnprintf(cBuf, 512, pcFormat, list);
     Message(cBuf);
 #endif
     __Errorlog++;
@@ -81,8 +78,8 @@ void Error(char *pcFormat, ...)
 //*****************************************************************************
 int GetCmd(char *pcBuffer, unsigned int uiBufLen)
 {
-    char cChar;
-    int iLen = 0;
+char cChar;
+int iLen = 0;
 
     while (MAP_UARTCharsAvail(CONSOLE) == false) {
 #if defined(USE_FREERTOS) || defined(USE_TI_RTOS)
@@ -108,7 +105,7 @@ int GetCmd(char *pcBuffer, unsigned int uiBufLen)
 #endif
         }
         cChar = MAP_UARTCharGetNonBlocking(CONSOLE);
-        MAP_UARTCharPut(CONSOLE,cChar);
+        MAP_UARTCharPut(CONSOLE, cChar);
     }
 
     *(pcBuffer + iLen) = '\0';
@@ -157,8 +154,8 @@ int iRet = 0;
       if(iRet > -1 && iRet < iSize) {
           break;
       } else {
-          iSize *= 2;
-          if((pcTemp = realloc(pcBuff, iSize)) == NULL) {
+          iSize <<= 1;
+          if (!(pcTemp = realloc(pcBuff, iSize))) {
               Message("Could not reallocate memory\n\r");
               iRet = -1;
               break;
@@ -200,7 +197,7 @@ long AudioSetupDMAMode(void (*pfnAppCbHndlr)(void),
                        unsigned long ulCallbackEvtSamples,
                        unsigned char RxTx)
 {
-    MAP_I2SIntEnable(I2S_BASE,I2S_INT_XDATA);
+    MAP_I2SIntEnable(I2S_BASE, I2S_INT_XDATA);
 #ifdef USE_TIRTOS
     long lRetVal = -1;
     lRetVal = osi_InterruptRegister(INT_I2S, pfnAppCbHndlr, INT_PRIORITY_LVL_1);
@@ -217,24 +214,24 @@ long AudioSetupDMAMode(void (*pfnAppCbHndlr)(void),
 }
 //*****************************************************************************
 void AudioCaptureRendererConfigure(unsigned char bitsPerSample,
-                                    unsigned short bitRate,
-                                    unsigned char noOfChannels,
-                                    unsigned char RxTx,
-                                    unsigned char dma)
+                                   unsigned short bitRate,
+                                   unsigned char noOfChannels,
+                                   unsigned char RxTx,
+                                   unsigned char dma)
 {
 unsigned long bitClk = bitsPerSample * bitRate * noOfChannels;
 
-    if(dma) {
+    if (dma) {
         if(bitsPerSample == 16) {
             PRCMI2SClockFreqSet(512000);
             I2SConfigSetExpClk(I2S_BASE, 512000, bitClk, I2S_SLOT_SIZE_16 | I2S_PORT_DMA);
         }
     }
 
-    if(RxTx == I2S_MODE_RX_TX)
+    if (RxTx == I2S_MODE_RX_TX)
         MAP_I2SSerializerConfig(I2S_BASE, I2S_DATA_LINE_1, I2S_SER_MODE_RX, I2S_INACT_LOW_LEVEL);
 
-    if(RxTx & I2S_MODE_TX)
+    if (RxTx & I2S_MODE_TX)
         MAP_I2SSerializerConfig(I2S_BASE, I2S_DATA_LINE_0, I2S_SER_MODE_TX, I2S_INACT_LOW_LEVEL);
 
 }
@@ -275,7 +272,6 @@ unsigned long bitClk = bitsPerSample * bitRate * noOfChannels;
     switch (bitsPerSample) {
         case 16: sz = I2S_SLOT_SIZE_16; break;
         case 24: sz = I2S_SLOT_SIZE_24; break;
-//      case 32: sz = I2S_SLOT_SIZE_32; break;
             default : sz = I2S_SLOT_SIZE_8;
     }
     if (!dm) prt = I2S_PORT_CPU; else prt = I2S_PORT_DMA;
@@ -357,15 +353,15 @@ static unsigned char GetPeripheralIntNum(unsigned int uiGPIOPort)
 void GPIO_IF_LedConfigure(unsigned char ucPins)
 {
 
-  if(ucPins & LED1) GPIO_IF_GetPortNPin(GPIO_LED1, &g_uiLED1Port, &g_ucLED1Pin);
+  if (ucPins & LED1) GPIO_IF_GetPortNPin(GPIO_LED1, &g_uiLED1Port, &g_ucLED1Pin);
 
-  if(ucPins & LED2) GPIO_IF_GetPortNPin(GPIO_LED2, &g_uiLED2Port, &g_ucLED2Pin);
+  if (ucPins & LED2) GPIO_IF_GetPortNPin(GPIO_LED2, &g_uiLED2Port, &g_ucLED2Pin);
 
-  if(ucPins & LED3) GPIO_IF_GetPortNPin(GPIO_LED3, &g_uiLED3Port, &g_ucLED3Pin);
+  if (ucPins & LED3) GPIO_IF_GetPortNPin(GPIO_LED3, &g_uiLED3Port, &g_ucLED3Pin);
 
-  if(ucPins & LED4) GPIO_IF_GetPortNPin(GPIO_LED4, &g_uiLED4Port, &g_ucLED4Pin);
+  if (ucPins & LED4) GPIO_IF_GetPortNPin(GPIO_LED4, &g_uiLED4Port, &g_ucLED4Pin);
 
-  if(ucPins & LED5) GPIO_IF_GetPortNPin(GPIO_LED5, &g_uiLED5Port, &g_ucLED5Pin);
+  if (ucPins & LED5) GPIO_IF_GetPortNPin(GPIO_LED5, &g_uiLED5Port, &g_ucLED5Pin);
 
 }
 //*****************************************************************************
@@ -406,7 +402,7 @@ void GPIO_IF_LedOn(char ledNum)
 //*****************************************************************************
 void GPIO_IF_LedOff(char ledNum)
 {
-    switch(ledNum) {
+    switch (ledNum) {
         case MCU_LED5_GPIO:
             GPIO_IF_Set(GPIO_LED5, g_uiLED5Port, g_ucLED5Pin, 0);
         break;
@@ -443,7 +439,7 @@ unsigned char GPIO_IF_LedStatus(unsigned char ucGPIONum)
 {
 unsigned char ucLEDStatus;
 
-    switch(ucGPIONum) {
+    switch (ucGPIONum) {
         case MCU_GREEN_LED_GPIO:
             ucLEDStatus = GPIO_IF_Get(ucGPIONum, g_uiLED3Port, g_ucLED3Pin);
         break;
@@ -487,9 +483,9 @@ void GPIO_IF_GetPortNPin(unsigned char ucPin,
 }
 //****************************************************************************
 void GPIO_IF_ConfigureNIntEnable(unsigned int uiGPIOPort,
-                                  unsigned char ucGPIOPin,
-                                  unsigned int uiIntType,
-                                  void (*pfnIntHandler)(void))
+                                 unsigned char ucGPIOPin,
+                                 unsigned int uiIntType,
+                                 void (*pfnIntHandler)(void))
 {
     MAP_GPIOIntTypeSet(uiGPIOPort, ucGPIOPin, uiIntType);
 
@@ -509,7 +505,7 @@ void GPIO_IF_ConfigureNIntEnable(unsigned int uiGPIOPort,
 }
 //****************************************************************************
 void GPIO_IF_Set(unsigned char ucPin,
-                 unsigned int uiGPIOPort,
+                 unsigned int  uiGPIOPort,
                  unsigned char ucGPIOPin,
                  unsigned char ucGPIOValue)
 {
@@ -518,18 +514,18 @@ void GPIO_IF_Set(unsigned char ucPin,
     ucGPIOValue = ucGPIOValue << (ucPin % 8);
 
     // Invoke the API to set the value
-    MAP_GPIOPinWrite(uiGPIOPort,ucGPIOPin,ucGPIOValue);
+    MAP_GPIOPinWrite(uiGPIOPort, ucGPIOPin, ucGPIOValue);
 }
 //****************************************************************************
 unsigned char GPIO_IF_Get(unsigned char ucPin,
-                          unsigned int uiGPIOPort,
+                          unsigned int  uiGPIOPort,
                           unsigned char ucGPIOPin)
 {
 unsigned char ucGPIOValue;
 long lGPIOStatus;
 
     // Invoke the API to Get the value
-    lGPIOStatus =  MAP_GPIOPinRead(uiGPIOPort,ucGPIOPin);
+    lGPIOStatus =  MAP_GPIOPinRead(uiGPIOPort, ucGPIOPin);
 
     // Set the corresponding bit in the bitmask
     ucGPIOValue = lGPIOStatus >> (ucPin % 8);

@@ -45,7 +45,7 @@ void InitCircularBuffer(tCircularBuffer *pCircularBuffer)
 //*****************************************************************************
 void DestroyCircularBuffer(tCircularBuffer *pCircularBuffer)
 {
-    if(pCircularBuffer->pucBufferStartPtr) free(pCircularBuffer->pucBufferStartPtr);
+    if (pCircularBuffer->pucBufferStartPtr) free(pCircularBuffer->pucBufferStartPtr);
 
     free(pCircularBuffer);
 }
@@ -227,7 +227,8 @@ unsigned int GetBufferSize(tCircularBuffer *pCircularBuffer)
 //****************************************************************************
 unsigned int GetBufferEmptySize(tCircularBuffer *pCircularBuffer)
 {
-    unsigned int uiBufferFilled = GetBufferSize(pCircularBuffer);
+unsigned int uiBufferFilled = GetBufferSize(pCircularBuffer);
+
     return (pCircularBuffer->ulBufferSize - uiBufferFilled);
 }
 //*****************************************************************************
@@ -257,9 +258,11 @@ tboolean IsBufferEmpty(tCircularBuffer *pCircularbuffer)
 //*****************************************************************************
 tboolean IsBufferSizeFilled(tCircularBuffer *pCircularBuffer, unsigned long ulSize)
 {
-    unsigned int uiBufferFilled = GetBufferSize(pCircularBuffer);
+unsigned int uiBufferFilled = GetBufferSize(pCircularBuffer);
+
     if (uiBufferFilled >= ulSize) return (TRUE);
-    return(FALSE);
+
+    return (FALSE);
 }
 
 //*****************************************************************************
@@ -274,8 +277,10 @@ tboolean IsBufferSizeFilled(tCircularBuffer *pCircularBuffer, unsigned long ulSi
 //*****************************************************************************
 tboolean IsBufferVacant(tCircularBuffer *pCircularBuffer, unsigned long ulSize)
 {
-    unsigned int uiBufferFilled = GetBufferSize(pCircularBuffer);
+unsigned int uiBufferFilled = GetBufferSize(pCircularBuffer);
+
     if (uiBufferFilled <= ulSize) return (TRUE);
+
     return (FALSE);
 }
 //*****************************************************************************
@@ -290,8 +295,10 @@ tboolean IsBufferVacant(tCircularBuffer *pCircularBuffer, unsigned long ulSize)
 //*****************************************************************************
 tboolean IsBufferOverflow(tCircularBuffer *pCircularBuffer, unsigned long ulSize)
 {
-    unsigned int uiBufferFilled = GetBufferSize(pCircularBuffer);
+unsigned int uiBufferFilled = GetBufferSize(pCircularBuffer);
+
     if (uiBufferFilled + ulSize >= pCircularBuffer->ulBufferSize) return (TRUE);
+
     return (FALSE);
 }
 

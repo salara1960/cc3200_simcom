@@ -316,7 +316,7 @@ unsigned int g_uiIpAddress = 0;
 unsigned int g_uiIpMask = 0xffffff00;
 unsigned int broadcast_adr = 0;
 int broadcast_port = 5050;
-const char * broadcast_name = "sim5320_cc3200";
+const char *broadcast_name = "sim5320_cc3200";
 
 unsigned char g_ucSSID[AP_SSID_LEN_MAX];
 const char *crypto_type[7] = {"open","wep","wpa/wpa2","wps_pbc","wps_pin","wpa_ent","unknown"};
@@ -440,15 +440,15 @@ static long WlanConnect()
     SlSecParams_t secParams = {0};
     long lRetVal = 0;
 
-    if (ReadFileFromDev((unsigned char *)SSID_FILE_NAME)>0) {
+    if (ReadFileFromDev((unsigned char *)SSID_FILE_NAME) > 0) {
     	strcpy((char*)SSID_NAME, (char*)ssid_ctl_cmd.ssid);
     	strcpy((char*)SECURITY_KEY, (char*)ssid_ctl_cmd.key);
     	SECURITY_TYPE = ssid_ctl_cmd.type;
     }
 
-    secParams.Key = (signed char*)SECURITY_KEY;
+    secParams.Key    = (signed char*)SECURITY_KEY;
     secParams.KeyLen = strlen(SECURITY_KEY);
-    secParams.Type = SECURITY_TYPE;
+    secParams.Type   = SECURITY_TYPE;
     lRetVal = sl_WlanConnect((signed char*)SSID_NAME, strlen(SSID_NAME), 0, &secParams, 0);
     ASSERT_ON_ERROR(lRetVal);
 
@@ -513,8 +513,8 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
             memset(g_ucConnectionSSID,  0, sizeof(g_ucConnectionSSID));
             memset(g_ucConnectionBSSID, 0, sizeof(g_ucConnectionBSSID));
             // Copy new connection SSID and BSSID to global parameters
-            memcpy(g_ucConnectionSSID,pWlanEvent->EventData.
-                   STAandP2PModeWlanConnected.ssid_name,
+            memcpy(g_ucConnectionSSID,
+                   pWlanEvent->EventData.STAandP2PModeWlanConnected.ssid_name,
                    pWlanEvent->EventData.STAandP2PModeWlanConnected.ssid_len);
             memcpy(g_ucConnectionBSSID,
                    pWlanEvent->EventData.STAandP2PModeWlanConnected.bssid,
@@ -529,7 +529,7 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
         break;
         case SL_WLAN_DISCONNECT_EVENT:
         {
-            slWlanConnectAsyncResponse_t*  pEventData = NULL;
+            slWlanConnectAsyncResponse_t *pEventData = NULL;
 
             CLR_STATUS_BIT(g_ulStatus, STATUS_BIT_CONNECTION);
             CLR_STATUS_BIT(g_ulStatus, STATUS_BIT_IP_AQUIRED);
@@ -594,7 +594,7 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
         {
             SET_STATUS_BIT(g_ulStatus, STATUS_BIT_SMARTCONFIG_START);
             UART_PRINT("[WLAN] Smart config start...\n\r");
-         }
+        }
         break;
         case SL_WLAN_SMART_CONFIG_STOP_EVENT:
         {
@@ -743,13 +743,13 @@ void SimpleLinkHttpServerCallback(SlHttpServerEvent_t *pSlHttpServerEvent,
     switch (pSlHttpServerEvent->Event) {
         case SL_NETAPP_HTTPGETTOKENVALUE_EVENT:
         {
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
                             g_token_get [0], \
                             pSlHttpServerEvent->EventData.httpTokenName.len))
             {
                 if (g_ucConnectedToConfAP == 1) {
                     // Important - Connection Status
-                    memcpy(pSlHttpServerResponse->ResponseData.token_value.data, "TRUE",strlen("TRUE"));
+                    memcpy(pSlHttpServerResponse->ResponseData.token_value.data, "TRUE", strlen("TRUE"));
                     pSlHttpServerResponse->ResponseData.token_value.len = strlen("TRUE");
                 } else {
                     // Important - Connection Status
@@ -758,50 +758,50 @@ void SimpleLinkHttpServerCallback(SlHttpServerEvent_t *pSlHttpServerEvent,
                 }
             }
 
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
                             g_token_get [1], \
                             pSlHttpServerEvent->EventData.httpTokenName.len))
             {
                 // Important - Token value len should be < MAX_TOKEN_VALUE_LEN
                 memcpy(pSlHttpServerResponse->ResponseData.token_value.data, \
-                        g_NetEntries[0].ssid,g_NetEntries[0].ssid_len);
+                        g_NetEntries[0].ssid, g_NetEntries[0].ssid_len);
                 pSlHttpServerResponse->ResponseData.token_value.len = g_NetEntries[0].ssid_len;
             }
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
                             g_token_get [2], \
                             pSlHttpServerEvent->EventData.httpTokenName.len))
             {
                 // Important - Token value len should be < MAX_TOKEN_VALUE_LEN
                 memcpy(pSlHttpServerResponse->ResponseData.token_value.data, \
-                        g_NetEntries[1].ssid,g_NetEntries[1].ssid_len);
+                        g_NetEntries[1].ssid, g_NetEntries[1].ssid_len);
                 pSlHttpServerResponse->ResponseData.token_value.len = \
                                                        g_NetEntries[1].ssid_len;
             }
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
                             g_token_get [3], \
                             pSlHttpServerEvent->EventData.httpTokenName.len))
             {
                 // Important - Token value len should be < MAX_TOKEN_VALUE_LEN
                 memcpy(pSlHttpServerResponse->ResponseData.token_value.data, \
-                        g_NetEntries[2].ssid,g_NetEntries[2].ssid_len);
+                        g_NetEntries[2].ssid, g_NetEntries[2].ssid_len);
                 pSlHttpServerResponse->ResponseData.token_value.len = g_NetEntries[2].ssid_len;
             }
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
                             g_token_get [4], \
                             pSlHttpServerEvent->EventData.httpTokenName.len))
             {
                 // Important - Token value len should be < MAX_TOKEN_VALUE_LEN
                 memcpy(pSlHttpServerResponse->ResponseData.token_value.data, \
-                        g_NetEntries[3].ssid,g_NetEntries[3].ssid_len);
+                        g_NetEntries[3].ssid, g_NetEntries[3].ssid_len);
                 pSlHttpServerResponse->ResponseData.token_value.len = g_NetEntries[3].ssid_len;
             }
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpTokenName.data, \
                             g_token_get [5], \
                             pSlHttpServerEvent->EventData.httpTokenName.len))
             {
                 // Important - Token value len should be < MAX_TOKEN_VALUE_LEN
                 memcpy(pSlHttpServerResponse->ResponseData.token_value.data, \
-                        g_NetEntries[4].ssid,g_NetEntries[4].ssid_len);
+                        g_NetEntries[4].ssid, g_NetEntries[4].ssid_len);
                 pSlHttpServerResponse->ResponseData.token_value.len = g_NetEntries[4].ssid_len;
             } else break;
         }
@@ -809,17 +809,17 @@ void SimpleLinkHttpServerCallback(SlHttpServerEvent_t *pSlHttpServerEvent,
         case SL_NETAPP_HTTPPOSTTOKENVALUE_EVENT:
         {
 
-            if ((0 == memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
+            if ((!memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
                              "__SL_P_USC", \
                              pSlHttpServerEvent->EventData.httpPostData.token_name.len)) && \
-            (0 == memcmp(pSlHttpServerEvent->EventData.httpPostData.token_value.data, \
+            (!memcmp(pSlHttpServerEvent->EventData.httpPostData.token_value.data, \
                          "Add", \
                          pSlHttpServerEvent->EventData.httpPostData.token_value.len)))
             {
                 g_ucProfileAdded = 0;
 
             }
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
                      "__SL_P_USD", \
                      pSlHttpServerEvent->EventData.httpPostData.token_name.len))
             {
@@ -829,7 +829,7 @@ void SimpleLinkHttpServerCallback(SlHttpServerEvent_t *pSlHttpServerEvent,
                 g_cWlanSSID[pSlHttpServerEvent->EventData.httpPostData.token_value.len] = 0;
             }
 
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
                             "__SL_P_USE", \
                             pSlHttpServerEvent->EventData.httpPostData.token_name.len))
             {
@@ -843,7 +843,7 @@ void SimpleLinkHttpServerCallback(SlHttpServerEvent_t *pSlHttpServerEvent,
                     g_SecParams.Type =  SL_SEC_TYPE_OPEN;
                 }
             }
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
                          "__SL_P_USF", \
                          pSlHttpServerEvent->EventData.httpPostData.token_name.len))
             {
@@ -854,13 +854,13 @@ void SimpleLinkHttpServerCallback(SlHttpServerEvent_t *pSlHttpServerEvent,
                 g_SecParams.Key = g_cWlanSecurityKey;
                 g_SecParams.KeyLen = pSlHttpServerEvent->EventData.httpPostData.token_value.len;
             }
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
                             "__SL_P_USG", \
                             pSlHttpServerEvent->EventData.httpPostData.token_name.len))
             {
                 g_ucPriority = pSlHttpServerEvent->EventData.httpPostData.token_value.data[0] - 48;
             }
-            if (0 == memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
+            if (!memcmp(pSlHttpServerEvent->EventData.httpPostData.token_name.data, \
                             "__SL_P_US0", \
                             pSlHttpServerEvent->EventData.httpPostData.token_name.len))
             {
@@ -880,7 +880,6 @@ static void InitializeAppVariables()
 {
     g_ulStatus = 0;
     g_uiIpAddress = 0;
-
     g_ulGatewayIP = 0;
 
     memset(g_ucConnectionSSID,  0, sizeof(g_ucConnectionSSID));
@@ -920,7 +919,7 @@ static void InitializeAppVariables()
 //*****************************************************************************
 static long ConfigureSimpleLinkToDefaultState()
 {
-SlVersionFull   ver = {0};
+SlVersionFull ver = {0};
 _WlanRxFilterOperationCommandBuff_t  RxFilterIdMask = {0};
 unsigned char ucVal = 1;
 unsigned char ucConfigOpt = 0;
@@ -1137,8 +1136,7 @@ long ConnectToNetwork()
 			ASSERT_ON_ERROR(lRetVal);
 
 			//Waiting for the device to Auto Connect
-			while (!IS_IP_ACQUIRED(g_ulStatus))
-			{
+			while (!IS_IP_ACQUIRED(g_ulStatus)) {
 				MAP_UtilsDelay(500);
 			}
 
@@ -1176,11 +1174,9 @@ unsigned char ucPinValue;
 
     //If Connected to VCC, Mode is AP
     if (ucPinValue == 1) {
-        //AP Mode
-        g_uiDeviceModeConfig = ROLE_AP;
+        g_uiDeviceModeConfig = ROLE_AP;//AP Mode
     } else {
-        //STA Mode
-        g_uiDeviceModeConfig = ROLE_STA;
+        g_uiDeviceModeConfig = ROLE_STA;//STA Mode
     }
 
 }
@@ -1566,7 +1562,7 @@ int rStatus, sStatus, pak_size = sizeof(s_packet);
 
 
 #ifdef PACK_COUNT_PRN
-    udp_sec = one_sec+10;
+    udp_sec = one_sec + 10;
 #endif
 
 #ifndef DIRECT
@@ -1794,7 +1790,7 @@ s_ctl_bin *bin;
 s_ctl_auth *au;
 s_ctl_md5 *md5;
 
-	char *st = calloc(1, sizeof(s_ctl_cmd) + 96);
+	char *st = (char *)calloc(1, sizeof(s_ctl_cmd) + 96);
 	if (st) {
 		switch (label) {
 			case 1:
@@ -1805,7 +1801,7 @@ s_ctl_md5 *md5;
 		cmd = uk->cmd;
 		switch (cmd) {
 			case 0 :
-				pole = calloc(1, SSID_LEN_MAX + 1);
+				pole = (char *)calloc(1, SSID_LEN_MAX + 1);
 				if (pole) {
 					memcpy(pole, uk->ssid, SSID_LEN_MAX);
 					sprintf(st+strlen(st), "\tcmd=%d\n\r\tssid='%s'\n\r", cmd, pole);
@@ -1849,7 +1845,7 @@ s_ctl_md5 *md5;
 				break;
 			case 11 :
 				au = (s_ctl_auth *)uk;
-				pole = calloc(1, MAX_LP_LEN + 1);
+				pole = (char *)calloc(1, MAX_LP_LEN + 1);
 				if (pole) {
 					memcpy(pole, au->login, MAX_LP_LEN);
 					sprintf(st+strlen(st), "\tcmd=%d\n\r\tlogin='%s'\n\r", cmd, pole);
@@ -1860,12 +1856,13 @@ s_ctl_md5 *md5;
 				break;
 			case 12 :
 				md5 = (s_ctl_md5 *)uk;
-				pole = calloc(1, MAX_LP_LEN + 1);
+				pole = (char *)calloc(1, MAX_LP_LEN + 1);
 				if (pole) {
 					memcpy(pole, md5->str, MAX_LP_LEN);
 					sprintf(st+strlen(st),
 							"\tcmd=%d\n\r\ttime='%u'\n\r\tmd5='%s'\n\r\tmode=%d\n\r\tauth_ip=%d.%d.%d.%d\n\r",
-							cmd, md5->epoch, pole, md5->mode,
+							cmd, md5->epoch,
+							pole, md5->mode,
 							md5->auth_adr[0], md5->auth_adr[1], md5->auth_adr[2], md5->auth_adr[3]);
 					free(pole);
 				}
@@ -1887,9 +1884,9 @@ int sz = sizeof(s_ctl_cmd);
 _u8 *uk;
 
     lRetVal = sl_FsOpen(fname,
-                FS_MODE_OPEN_CREATE(sz*2, _FS_FILE_OPEN_FLAG_COMMIT|_FS_FILE_PUBLIC_WRITE),
-				NULL,
-				&lFileHandle);
+                        FS_MODE_OPEN_CREATE(sz*2, _FS_FILE_OPEN_FLAG_COMMIT | _FS_FILE_PUBLIC_WRITE),
+                        NULL,
+                        &lFileHandle);
     if (lRetVal < 0) {// File may already be created
         lRetVal = sl_FsClose(lFileHandle, 0, 0, 0);
         ASSERT_ON_ERROR(lRetVal);
@@ -1941,10 +1938,10 @@ _u8 *uk;
     	return ret;
     } else {
     	UART_PRINT("[FILE] file '%s' info: flag=%u len=%d/%d\n\r",
-    			fname,
-				info.flags,
-				info.FileLen,
-				info.AllocatedLen);
+    			   fname,
+				   info.flags,
+				   info.FileLen,
+				   info.AllocatedLen);
     }
     if (info.FileLen < sz) return (-1);
 
@@ -1986,10 +1983,10 @@ unsigned char *buf = NULL;
     	return ret;
     } else {
     	UART_PRINT("[FILE] file '%s' info: flag=%u len=%d/%d\n\r",
-    			fname,
-				info.flags,
-				info.FileLen,
-				info.AllocatedLen);
+    			   fname,
+				   info.flags,
+				   info.FileLen,
+				   info.AllocatedLen);
     }
 
     if (!info.FileLen) return (-1);
@@ -2262,13 +2259,9 @@ static unsigned long tmr_ctl = 0;
     	    		cStatus = sl_Send(cNewSockID, &out[0], 1, 0);
     	    	}
     	    	if (bin_start) {
-    	    		while (bin_start) {
-    	    			osi_Sleep(10);
-    	    		}
-    	    		if (bin_result)
-    	    		    out[0] = 0xee;
-    	    		else
-    	    		    out[0] = 0;
+    	    		while (bin_start) osi_Sleep(10);
+    	    		if (bin_result) out[0] = 0xee;
+    	    		           else out[0] = 0;
     	    		cStatus = sl_Send(cNewSockID, &out[0], 1, 0);
     	    		sl_Close(cNewSockID);
     	    		GSM_OFF(1);
@@ -2303,8 +2296,8 @@ static unsigned long tmr_ctl = 0;
 static int FlushHTTPResponse(HTTPCli_Handle cli)
 {
 const char *ids[2] = {
-		HTTPCli_FIELD_NAME_CONNECTION, /* App will get connection header value. all others will skip by lib */
-		NULL
+    HTTPCli_FIELD_NAME_CONNECTION, /* App will get connection header value. all others will skip by lib */
+	NULL
 };
 char  buf[128];
 int id;
@@ -2377,11 +2370,11 @@ const char *ids[4] = {
     // Read response headers
     while ((id = HTTPCli_getResponseField(cli, (char *)g_buff, sizeof(g_buff), &moreFlag)) != HTTPCli_FIELD_ID_END) {
         if(!id) UART_PRINT("[BIN] Content length: %s\n\r", g_buff);
-        else if(id == 1) {
-            if(!strncmp((const char *)g_buff, "chunked", sizeof("chunked")))
+        else if (id == 1) {
+            if (!strncmp((const char *)g_buff, "chunked", sizeof("chunked")))
                 						UART_PRINT("Chunked transfer encoding\n\r");
-        } else if(id == 2) {
-            if(!strncmp((const char *)g_buff, "close", sizeof("close")))
+        } else if (id == 2) {
+            if (!strncmp((const char *)g_buff, "close", sizeof("close")))
             							ASSERT_ON_ERROR(FORMAT_NOT_SUPPORTED);
         }
     }
@@ -2398,7 +2391,7 @@ const char *ids[4] = {
     }
 #endif
 
-    while(1) {
+    while (1) {
         len = HTTPCli_readResponseBody(cli, (char *)g_buff, sizeof(g_buff) - 1, &moreFlag);
         if(len < 0) {
             // Close file without saving
@@ -2421,7 +2414,7 @@ const char *ids[4] = {
 #endif
         bytesReceived +=len;
         if ((len - 2) >= 0 && g_buff[len - 2] == '\r' && g_buff [len - 1] == '\n') break;
-        if(!moreFlag) break;
+        if (!moreFlag) break;
     }
 
     UART_PRINT("[BIN] Total bytes received: %d\n\r", bytesReceived);
@@ -2445,7 +2438,7 @@ char *uk1 = NULL, *uk2 = NULL, *uk3 = NULL;
     	uk1 = &ctl_bin.url[0];//begin adr
     	uk2 = strchr(uk1, ':');
     	if (uk2) {
-    		uk3 = uk2+1;
+    		uk3 = uk2 + 1;
     		dl = uk2 - uk1;
     		memcpy(HOST_NAME, uk1, dl);
     	}
@@ -2511,80 +2504,78 @@ long ret = -1, old_fd = 0, new_fd = 0, lens = 0, cnt_rd = 0, cnt_wr = 0, rt = 0,
 unsigned char *buf = NULL;
 SlFsFileInfo_t info;
 
-	if (sl_FsOpen(old_name, FS_MODE_OPEN_READ, NULL, &old_fd)) return ret;
+    if (sl_FsOpen(old_name, FS_MODE_OPEN_READ, NULL, &old_fd)) return ret;
 
-	ret = sl_FsGetInfo(old_name,0,&info);
-	if (ret < 0)
-	    goto outl;
-	else
-	    lens = info.FileLen;
+    ret = sl_FsGetInfo(old_name, 0, &info);
+    if (ret < 0) goto outl;
+            else lens = info.FileLen;
 
-	if (!sl_FsOpen(new_name, FS_MODE_OPEN_READ, NULL, &new_fd)) {
-		sl_FsClose(new_fd, 0, 0, 0);
-		ret = sl_FsDel(new_name, 0);
-		if (!ret) {
-			new_fd=-1;
-		} else {
-			UART_PRINT("[FILE] delete '%s' ERROR (%d)\n\r", new_name, ret);
-			goto outl;
-		}
-	}
-	//create dest file
-	ret = sl_FsOpen((_u8 *)new_name, FS_MODE_OPEN_WRITE, 0, &new_fd);
-	if (ret < 0) {
-		ret = sl_FsOpen((unsigned char *)new_name,
+    if (!sl_FsOpen(new_name, FS_MODE_OPEN_READ, NULL, &new_fd)) {
+        sl_FsClose(new_fd, 0, 0, 0);
+        ret = sl_FsDel(new_name, 0);
+        if (!ret) {
+            new_fd = -1;
+        } else {
+            UART_PRINT("[FILE] delete '%s' ERROR (%d)\n\r", new_name, ret);
+            goto outl;
+        }
+    }
+    //create dest file
+    ret = sl_FsOpen((_u8 *)new_name, FS_MODE_OPEN_WRITE, 0, &new_fd);
+    if (ret < 0) {
+        ret = sl_FsOpen((unsigned char *)new_name,
 		                FS_MODE_OPEN_CREATE(SIZE_80K, _FS_MODE_OPEN_WRITE|_FS_MODE_OPEN_READ),
 		                0,
 		                &new_fd);
-		if (ret < 0) {
-			UART_PRINT("[FILE] create '%s' ERROR (%d)\n\r",new_name,ret);
-			goto outl;
-		}
-	}
+        if (ret < 0) {
+            UART_PRINT("[FILE] create '%s' ERROR (%d)\n\r",new_name,ret);
+            goto outl;
+        }
+    }
 
-	buf = (unsigned char *)calloc(1, sz);
-	if (!buf) goto outl;
+    buf = (unsigned char *)calloc(1, sz);
+    if (!buf) goto outl;
 
-	while (1) {
-		// read data from file
-		ret = sl_FsRead(old_fd, cnt_rd, buf, sz);
-		if (ret < 0) break;
-	    else {
-	    	cnt_rd += ret;
-	    	rt = ret;
-	    	//--------------
-	    	ret = sl_FsWrite(new_fd, cnt_wr, buf, rt);
-	    	if (ret > 0)
-	    	    cnt_wr += ret;
-	    	else {
-	    		UART_PRINT("[FILE] Failed during writing the file, Error-code: %d\r\n", FILE_WRITE_ERROR);
-	    		// Close file without saving
-	    		break;
-	    	}
-	    	//--------------
-	    }
-	    if (cnt_rd >= lens) break;
-	}
+    while (1) {
+        // read data from file
+        ret = sl_FsRead(old_fd, cnt_rd, buf, sz);
+        if (ret < 0) break;
+        else {
+            cnt_rd += ret;
+            rt = ret;
+            //--------------
+            ret = sl_FsWrite(new_fd, cnt_wr, buf, rt);
+            if (ret > 0) cnt_wr += ret;
+            else {
+                UART_PRINT("[FILE] Failed during writing the file, Error-code: %d\r\n", FILE_WRITE_ERROR);
+                // Close file without saving
+                break;
+            }
+            //--------------
+        }
+        if (cnt_rd >= lens) break;
+    }
 
 outl:
-	info.FileLen = 0;
-	if (buf) free(buf);
-	if (new_fd) {
-		sl_FsGetInfo(new_name, 0, &info);
-		sl_FsClose(new_fd, 0, 0, 0);
-	}
-	if (old_fd) sl_FsClose(old_fd, 0, 0, 0);
+    info.FileLen = 0;
+    if (buf) free(buf);
+    if (new_fd) {
+        sl_FsGetInfo(new_name, 0, &info);
+        sl_FsClose(new_fd, 0, 0, 0);
+    }
+    if (old_fd) sl_FsClose(old_fd, 0, 0, 0);
 
-	if (lens == info.FileLen) {
-		ret = sl_FsDel(old_name, 0);
-		if (ret) UART_PRINT("[FILE] delete old file '%s' ERROR (%d)\n\r", old_name, ret);
-		ret = 0;
-	} else {
-		ret = -1;
-		UART_PRINT("[FILE] Failed during writing the file, rd=%d/%d wr=%d/%d\n\r",
-				   lens, cnt_rd, info.FileLen, cnt_wr);
-	}
-	return ret;
+    if (lens == info.FileLen) {
+        ret = sl_FsDel(old_name, 0);
+        if (ret) UART_PRINT("[FILE] delete old file '%s' ERROR (%d)\n\r", old_name, ret);
+        ret = 0;
+    } else {
+        ret = -1;
+        UART_PRINT("[FILE] Failed during writing the file, rd=%d/%d wr=%d/%d\n\r",
+		           lens, cnt_rd, info.FileLen, cnt_wr);
+    }
+
+    return ret;
 }
 //*****************************************************************************
 //              Нитка обновления firmware с удаленного сервера
@@ -2593,34 +2584,32 @@ static void BINTask(void *pvParameters)
 {
 long ret = 0, err = 0;
 
-	while (!WLanDone || !mode_done || !ctl_start || !udp_go) osi_Sleep(40);
+    while (!WLanDone || !mode_done || !ctl_start || !udp_go) osi_Sleep(40);
 
-	while (1) {
-		if (bin_start) {
-			UART_PRINT("[BIN:%08u] Start firmware update...\n\r", varta);
-			err = 0;
-			bin_result = ServerFileDownload();// 0 - all OK
-			if (!bin_result)
-			    UART_PRINT("[FILE] saved as '%s'\n\r", FILE_NAME);
-			else
-			    err++;
+    while (1) {
+        if (bin_start) {
+            UART_PRINT("[BIN:%08u] Start firmware update...\n\r", varta);
+            err = 0;
+            bin_result = ServerFileDownload();// 0 - all OK
+            if (!bin_result) UART_PRINT("[FILE] saved as '%s'\n\r", FILE_NAME);
+                        else err++;
 
-			if (!bin_result) {
-				ret = frename((unsigned char *)FILE_NAME, (unsigned char *)new_name);
-				UART_PRINT("[BIN] rename from '%s' to '%s' done (%d)\n\r", FILE_NAME, new_name, ret);
-				if (ret) err++;
-			}
+            if (!bin_result) {
+                ret = frename((unsigned char *)FILE_NAME, (unsigned char *)new_name);
+                UART_PRINT("[BIN] rename from '%s' to '%s' done (%d)\n\r", FILE_NAME, new_name, ret);
+                if (ret) err++;
+            }
 
-			if ((!bin_result) && (!ret)) {
-				ret = ReadAnyFile((unsigned char *)new_name, 1);// 1 - no print file content
-				if (ret > 0) UART_PRINT("[BIN] read '%s' OK (%d)\n\r", (unsigned char *)new_name, ret);
-			}
-			bin_result = err;
-			bin_start = 0;
-			UART_PRINT("[BIN:%08u] Stop firmware update.\n\r", varta);
-		}
-		osi_Sleep(50);
-	}
+            if ((!bin_result) && (!ret)) {
+                ret = ReadAnyFile((unsigned char *)new_name, 1);// 1 - no print file content
+                if (ret > 0) UART_PRINT("[BIN] read '%s' OK (%d)\n\r", (unsigned char *)new_name, ret);
+            }
+            bin_result = err;
+            bin_start = 0;
+            UART_PRINT("[BIN:%08u] Stop firmware update.\n\r", varta);
+        }
+        osi_Sleep(50);
+    }
 }
 #endif
 //*****************************************************************************
@@ -2653,30 +2642,30 @@ static void BroadCastTask(void *pvParameters)
 unsigned int *uk_self_adr = NULL, *uk_s_a = NULL;
 unsigned char s_a[4] = {0};
 
-	while (!WLanDone || !mode_done || !tcp_begin) osi_Sleep(50);
+    while (!WLanDone || !mode_done || !tcp_begin) osi_Sleep(50);
 
-	while (1) {
-		memcpy(s_a, self_adr, 4);
-		uk_self_adr = (unsigned int *)&self_adr[0];
-		uk_s_a = (unsigned int *)&s_a[0];
+    while (1) {
+        memcpy(s_a, self_adr, 4);
+        uk_self_adr = (unsigned int *)&self_adr[0];
+        uk_s_a = (unsigned int *)&s_a[0];
 
-		UART_PRINT("[BCAST] Start broadcast task...\n\r");
-		while (!done_bc) {
-			SendMulticastPacket();
-			if (!done_bc) osi_Sleep(5000);
-		}
-		if (fd_bc > 0) {
-		    close(fd_bc);
-		    fd_bc = -1;
-		}
-		UART_PRINT("[BCAST] Stop broadcast task...\n\r");
+        UART_PRINT("[BCAST] Start broadcast task...\n\r");
+        while (!done_bc) {
+            SendMulticastPacket();
+            if (!done_bc) osi_Sleep(5000);
+        }
+        if (fd_bc > 0) {
+            close(fd_bc);
+            fd_bc = -1;
+        }
+        UART_PRINT("[BCAST] Stop broadcast task...\n\r");
 
-		while (1) {
-			osi_Sleep(1000);
-			if ( *(unsigned int *)uk_self_adr != *(unsigned int *)uk_s_a) break;
-		}
+        while (1) {
+            osi_Sleep(1000);
+            if ( *(unsigned int *)uk_self_adr != *(unsigned int *)uk_s_a) break;
+        }
 
-	}
+    }
 }
 //*****************************************************************************
 // Board Initialization & Configuration
@@ -2693,14 +2682,15 @@ static void BoardInit(void)
 #if defined(ccs)
     MAP_IntVTableBaseSet((unsigned long)&g_pfnVectors[0]);
 #endif
-#if defined(ewarm)
-    MAP_IntVTableBaseSet((unsigned long)&__vector_table);
-#endif
+    #if defined(ewarm)
+        MAP_IntVTableBaseSet((unsigned long)&__vector_table);
+    #endif
 #endif
     //
     // Enable Processor
     //
     IntMasterEnable();
+
     IntEnable(FAULT_SYSTICK);
 
     PRCMCC3200MCUInit();
@@ -2713,13 +2703,13 @@ void main()
 long lRetVal = -1;
 
     BoardInit();
-    
+
     PinMuxConfig();
-    
+
     //Change Pin 58 Configuration from Default to Pull Down
-    PinConfigSet(PIN_58, PIN_STRENGTH_2MA|PIN_STRENGTH_4MA, PIN_TYPE_STD_PD);//WLAN MODE (AP or Sta)
-    PinConfigSet(PIN_59, PIN_STRENGTH_2MA|PIN_STRENGTH_4MA, PIN_TYPE_STD);//VIO
-    
+    PinConfigSet(PIN_58, PIN_STRENGTH_2MA | PIN_STRENGTH_4MA, PIN_TYPE_STD_PD);//WLAN MODE (AP or Sta)
+    PinConfigSet(PIN_59, PIN_STRENGTH_2MA | PIN_STRENGTH_4MA, PIN_TYPE_STD);//VIO
+
     // Initialize ALL LED
     GPIO_IF_LedConfigure(LED1 | LED2 | LED3 | LED4 | LED5);
 
@@ -2728,7 +2718,7 @@ long lRetVal = -1;
 
     InitTerm(1);//init uart CONSOLE and GSM with print flag
 
-    UART_PRINT("\n\r\t\tVersion %s\n\r\n\r",APPLICATION_VERSION);
+    UART_PRINT("\n\r\t\tVersion %s\n\r\n\r", APPLICATION_VERSION);
 
     AudioInit();//init i2s
 
@@ -2737,28 +2727,28 @@ long lRetVal = -1;
 
     // Create RX and TX Buffer
     if(RecordPlay & I2S_MODE_TX) {
-    	pPlayBuffer = CreateCircularBuffer(PLAY_BUFFER_SIZE);//TX
-    	if(!pPlayBuffer) {
-    		UART_PRINT("[MAIN] Unable to Allocate Memory for Tx Buffer (Play)\n\r");
-    		LOOP_FOREVER();
+        pPlayBuffer = CreateCircularBuffer(PLAY_BUFFER_SIZE);//TX
+        if(!pPlayBuffer) {
+            UART_PRINT("[MAIN] Unable to Allocate Memory for Tx Buffer (Play)\n\r");
+            LOOP_FOREVER();
         } else UART_PRINT("[MAIN] Create Tx Buffer Play Ok (%d)\n\r", PLAY_BUFFER_SIZE);
     }
     if(RecordPlay == I2S_MODE_RX_TX) {//I2S_MODE_RX_TX
-    	pRecordBuffer = CreateCircularBuffer(RECORD_BUFFER_SIZE);//RX
-    	if(!pRecordBuffer) {
-    		UART_PRINT("[MAIN] Unable to Allocate Memory for Rx Buffer (Record)\n\r");
-    		LOOP_FOREVER();
+        pRecordBuffer = CreateCircularBuffer(RECORD_BUFFER_SIZE);//RX
+        if(!pRecordBuffer) {
+            UART_PRINT("[MAIN] Unable to Allocate Memory for Rx Buffer (Record)\n\r");
+            LOOP_FOREVER();
         }  else UART_PRINT("[MAIN] Create Rx Buffer Record Ok (%d)\n\r", RECORD_BUFFER_SIZE);
     }
     /***************************************************************************/
 
     MyAudioCaptureRendererConfigure(2048000,
-    								I2S_MODE_SLAVE,
-									16,        // 16 (bitsPerSample)
-									8000,      // 8000 (bitRate)
-									1,         // 1 (noOfChannels)
-									RecordPlay,
-									0);        //without DMA
+                                    I2S_MODE_SLAVE,
+                                    16,        // 16 (bitsPerSample)
+                                    8000,      // 8000 (bitRate)
+                                    1,         // 1 (noOfChannels)
+                                    RecordPlay,
+                                    0);        //without DMA
 
     MAP_I2SIntRegister(I2S_BASE, I2SIntHandler);
 
@@ -2775,38 +2765,38 @@ long lRetVal = -1;
     // Create CTL Server Task
     lRetVal = osi_TaskCreate(CTLTask, (signed char*)"CTLTask", OSI_STACK_SIZE, NULL, (1), NULL);//(0)
     if (lRetVal < 0) {
-    	UART_PRINT("[MAIN] Unable to create task CTLTask\n\r");
-    	LOOP_FOREVER();
+        UART_PRINT("[MAIN] Unable to create task CTLTask\n\r");
+        LOOP_FOREVER();
     }
 
     // Create TCP Server Task
     lRetVal = osi_TaskCreate(TCPTask, (signed char*)"TCPTask", OSI_STACK_SIZE, NULL, (1), NULL);//(2)
     if (lRetVal < 0) {
-    	UART_PRINT("[MAIN] Unable to create task TCPTask\n\r");
-    	LOOP_FOREVER();
+        UART_PRINT("[MAIN] Unable to create task TCPTask\n\r");
+        LOOP_FOREVER();
     }
 
     // Create UDP Server Task
     lRetVal = osi_TaskCreate(UDPTask, (signed char*)"UDPTask", OSI_STACK_SIZE, NULL, (1), NULL);
     if (lRetVal < 0) {
-    	UART_PRINT("[MAIN] Unable to create task UDPTask\n\r");
-    	LOOP_FOREVER();
+        UART_PRINT("[MAIN] Unable to create task UDPTask\n\r");
+        LOOP_FOREVER();
     }
 
 #ifdef SET_LOAD
     // Create BIN Server Task
     lRetVal = osi_TaskCreate(BINTask, (signed char*)"BINTask", OSI_STACK_SIZE, NULL, (1), NULL);
     if (lRetVal < 0) {
-    	UART_PRINT("[MAIN] Unable to create task BINTask\n\r");
-    	LOOP_FOREVER();
+        UART_PRINT("[MAIN] Unable to create task BINTask\n\r");
+        LOOP_FOREVER();
     }
 #endif
 
     ReadDeviceConfiguration();
     if (g_uiDeviceModeConfig == ROLE_STA) {
-    	// Create BroadCast Task
-    	lRetVal = osi_TaskCreate(BroadCastTask, (signed char*)"STATask", OSI_STACK_SIZE, NULL, (1), NULL);
-    	if(lRetVal < 0) UART_PRINT("[MAIN] Unable to create task STATask\n\r");
+        // Create BroadCast Task
+        lRetVal = osi_TaskCreate(BroadCastTask, (signed char*)"STATask", OSI_STACK_SIZE, NULL, (1), NULL);
+        if(lRetVal < 0) UART_PRINT("[MAIN] Unable to create task STATask\n\r");
     }
 
     osi_start();// Start OS Scheduler

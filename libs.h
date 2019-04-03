@@ -131,7 +131,7 @@ extern int GetCmd(char *pcBuffer, unsigned int uiBufLen);
 extern void InitTerm(unsigned char prn);
 extern void ClearTerm();
 extern void Message(const char *format);
-extern void GSM_TX_STR(char *str);
+extern void GSM_TX_STR(const char *str);
 extern char GSM_RX_BYTE();
 extern void Error(char *format,...);
 extern int TrimSpace(char * pcInput);
